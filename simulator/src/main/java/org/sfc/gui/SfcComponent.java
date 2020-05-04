@@ -28,14 +28,16 @@
  
 package org.sfc.gui;
 
-import javax.swing.JComponent;
+import javafx.scene.Node;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 
 /**
  * A standard default component for sfc gui elements.
  *
  * @author Thomas Weise
  */
-public class SfcComponent extends JComponent {
+public class SfcComponent extends GridPane {
   /**
    * the serial version uid
    */

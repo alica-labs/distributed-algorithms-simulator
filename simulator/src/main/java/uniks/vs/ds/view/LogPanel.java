@@ -26,13 +26,13 @@
 
 package uniks.vs.ds.view;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
-
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.ListView;
 import uniks.vs.ds.model.Connection;
 import uniks.vs.ds.model.ISimulationListener;
 import uniks.vs.ds.model.ModelBase;
-import uniks.vs.ds.model.Node;
+import uniks.vs.ds.model.SimNode;
 import uniks.vs.ds.model.Simulation;
 
 /**
@@ -40,7 +40,7 @@ import uniks.vs.ds.model.Simulation;
  *
  * @author Thomas Weise
  */
-final class LogPanel extends JList implements ISimulationListener {
+final class LogPanel extends ListView implements ISimulationListener {
   /**
    * the serial version uid
    */
@@ -49,7 +49,7 @@ final class LogPanel extends JList implements ISimulationListener {
   /**
    * the list model
    */
-  private final DefaultListModel m_model;
+  private final ObservableList m_model;
 
   /**
    * Create a new log panel.
@@ -58,8 +58,8 @@ final class LogPanel extends JList implements ISimulationListener {
    *          the simulation
    */
   public LogPanel(final Simulation simulation) {
-    super(new DefaultListModel());
-    this.m_model = ((DefaultListModel) (this.getModel()));
+    super(FXCollections.observableArrayList());
+    this.m_model = this.getChildren();
     simulation.addListener(this);
   }
 
@@ -69,7 +69,7 @@ final class LogPanel extends JList implements ISimulationListener {
    * @param n
    *          the node
    */
-  public void onNodeAdded(final Node n) {
+  public void onNodeAdded(final SimNode n) {
     //
   }
 
@@ -79,7 +79,7 @@ final class LogPanel extends JList implements ISimulationListener {
    * @param n
    *          the removed node
    */
-  public void onNodeRemoved(final Node n) {
+  public void onNodeRemoved(final SimNode n) {
     //
   }
 
@@ -127,7 +127,7 @@ final class LogPanel extends JList implements ISimulationListener {
     sb.append(' ');
     sb.append(logged);
     // this.m_model.add(0, sb.toString());
-    this.m_model.addElement(sb.toString());
+    this.m_model.add(sb.toString());
   }
 
 }

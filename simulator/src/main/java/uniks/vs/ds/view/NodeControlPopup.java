@@ -26,19 +26,21 @@
 
 package uniks.vs.ds.view;
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-
-import org.sfc.gui.PopupMouseListener;
+import org.sfc.gui.PopupMouseEventHandler;
 import org.sfc.gui.resources.icons.Icons;
 
-import uniks.vs.ds.model.Node;
+import uniks.vs.ds.model.SimNode;
 import uniks.vs.ds.model.Simulation;
 
 /**
@@ -46,7 +48,7 @@ import uniks.vs.ds.model.Simulation;
  *
  * @author Thomas Weise
  */
-final class NodeControlPopup extends JPopupMenu {
+final class NodeControlPopup extends ContextMenu {
   /**
    * the serial version uid
    */
@@ -55,20 +57,21 @@ final class NodeControlPopup extends JPopupMenu {
   /**
    * the shared instance
    */
-  static final MouseListener ML = new PopupMouseListener(
+  static final EventHandler ML = new PopupMouseEventHandler (
       new NodeControlPopup()) {
     private static final long serialVersionUID = 1L;
 
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public void mouseClicked(ContextMenuEvent e) {
       Object o;
       super.mouseClicked(e);
-      if (e.getButton() == MouseEvent.BUTTON1) {
-        o = e.getSource();
-        if (o instanceof NodeControl) {
-          ((NodeControl) o).select();
-        }
-      }
+      System.out.println("NCP: implementation missing !!");
+//      if (e.getButton() == MouseButton.PRIMARY) {
+//        o = e.getSource();
+//        if (o instanceof NodeControl) {
+//          ((NodeControl) o).select();
+//        }
+//      }
     }
   };
 
@@ -78,93 +81,86 @@ final class NodeControlPopup extends JPopupMenu {
   NodeControlPopup() {
     super();
 
-    JMenuItem j;
+    MenuItem j;
 
-    j = new JMenuItem("info"); //$NON-NLS-1$
-    j.addActionListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent ae) {
+    j = new MenuItem("info"); //$NON-NLS-1$
+    j.setOnAction(ae -> {
         NodeControl c;
-        Node n;
+        SimNode n;
         c = getControl(ae);
         if (c != null) {
-          n = c.getNode();
+          n = c.getSimNode();
           if (n != null)
             PropertyWindow.showProperties(n);
         }
-      }
     });
-    this.add(j);
-    j.setIcon(Icons.INFO);
+    this.getItems().add(j);
+    j.setGraphic(new ImageView(Icons.INFO));
 
-    this.addSeparator();
+    SeparatorMenuItem separator = new SeparatorMenuItem();
+    this.getItems().add(separator);
 
-    j = new JMenuItem("trigger"); //$NON-NLS-1$
-    j.addActionListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent ae) {
+    j = new MenuItem("trigger"); //$NON-NLS-1$
+    j.setOnAction(ae -> {
         NodeControl c;
-        Component cc;
-        Node n;
+        Node cc;
+        SimNode n;
         c = getControl(ae);
         if (c != null) {
-          n = c.getNode();
+          n = c.getSimNode();
           if (n != null) {
             n.trigger();
           }
           cc = c.getParent();
           if (cc != null) {
-            cc.repaint();
+//            cc.repaint();
           }
         }
-      }
     });
-    j.setIcon(Icons.EXECUTE);
-    this.add(j);
+    j.setGraphic(new ImageView(Icons.EXECUTE));
+    this.getItems().add(j);
 
-    j = new JMenuItem("step"); //$NON-NLS-1$
-    j.addActionListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent ae) {
+    j = new MenuItem("step"); //$NON-NLS-1$
+    j.setOnAction(ae -> {
         NodeControl c;
-        Node n;
+        SimNode n;
         c = getControl(ae);
         if (c != null) {
-          n = c.getNode();
+          n = c.getSimNode();
           if (n != null) {
             n.step();
           }
         }
-      }
     });
-    j.setIcon(Icons.APPLY);
-    this.add(j);
+    j.setGraphic(new ImageView(Icons.EXECUTE));
+    this.getItems().add(j);
 
-    j = new JMenuItem("reset"); //$NON-NLS-1$
-    j.addActionListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent ae) {
+    j = new MenuItem("reset"); //$NON-NLS-1$
+    j.setOnAction(ae -> {
         NodeControl c;
-        Node n;
+        SimNode n;
         c = getControl(ae);
         if (c != null) {
-          n = c.getNode();
+          n = c.getSimNode();
           if (n != null) {
             n.reset();
           }
         }
-      }
     });
-    j.setIcon(Icons.RESET);
-    this.add(j);
+    j.setGraphic(new ImageView(Icons.RESET));
+    this.getItems().add(j);
 
-    this.addSeparator();
+    separator = new SeparatorMenuItem();
+    this.getItems().add(separator);
 
-    j = new JMenuItem("delete"); //$NON-NLS-1$
-    j.addActionListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent ae) {
+    j = new MenuItem("delete"); //$NON-NLS-1$
+    j.setOnAction(ae ->  {
         NodeControl c;
         Simulation s;
-        Node n;
+        SimNode n;
         c = getControl(ae);
         if (c != null) {
-          n = c.getNode();
+          n = c.getSimNode();
           if (n != null) {
             s = n.getSimulation();
             if (s != null)
@@ -172,10 +168,9 @@ final class NodeControlPopup extends JPopupMenu {
             PropertyWindow.closeSpecificWindow(n);
           }
         }
-      }
     });
-    j.setIcon(Icons.DELETE);
-    this.add(j);
+    j.setGraphic(new ImageView(Icons.DELETE));
+    this.getItems().add(j);
   }
 
   /**
@@ -192,15 +187,15 @@ final class NodeControlPopup extends JPopupMenu {
     for (;;) {
       if (o == null)
         return null;
-      if (o instanceof JPopupMenu)
+      if (o instanceof ContextMenu)
         break;
-      if (o instanceof Component) {
-        o = ((Component) o).getParent();
+      if (o instanceof Node) {
+        o = ((Node) o).getParent();
       } else
         return null;
     }
 
-    o = ((JPopupMenu) o).getInvoker();
+    o = ((ContextMenu) o).getOwnerNode();
     if (o instanceof NodeControl)
       return ((NodeControl) o);
     return null;

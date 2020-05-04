@@ -36,7 +36,7 @@ import org.sfc.parallel.simulation.IStepable;
  *
  * @author Thomas Weise
  */
-public class Node extends SimulationBase implements IStepable {
+public class SimNode extends SimulationBase implements IStepable {
   /**
    * the serial version uid
    */
@@ -85,7 +85,7 @@ public class Node extends SimulationBase implements IStepable {
    * @param y
    *          the y-coordinate
    */
-  public Node(final int x, final int y) {
+  public SimNode(final int x, final int y) {
     super();
     this.m_connections = CollectionUtils.createList(-1);
     this.m_x = x;
@@ -168,7 +168,7 @@ public class Node extends SimulationBase implements IStepable {
     List<Connection> c;
     Connection x;
     Message m;
-    Node v;
+    SimNode v;
     Simulation s;
 
     if (msg == null)
@@ -208,12 +208,12 @@ public class Node extends SimulationBase implements IStepable {
    *          the one and only node to which no message should be send
    * @return the number of nodes we've sent a message to
    */
-  public synchronized int broadcastExcept(final Message msg, final Node n) {
+  public synchronized int broadcastExcept(final Message msg, final SimNode n) {
     int i, t;
     List<Connection> c;
     Connection x;
     Message m;
-    Node v;
+    SimNode v;
     Simulation s;
 
     if (n == null)
@@ -258,7 +258,7 @@ public class Node extends SimulationBase implements IStepable {
    *          the node to send the message to
    * @return the number of nodes we've sent a message to
    */
-  public synchronized int sendTo(final Message msg, final Node n) {
+  public synchronized int sendTo(final Message msg, final SimNode n) {
     int i;
     List<Connection> c;
     Connection x;
@@ -311,7 +311,7 @@ public class Node extends SimulationBase implements IStepable {
     List<Connection> c;
     Connection x;
     Simulation s;
-    Node n;
+    SimNode n;
 
     if (msg == null)
       return 0;
@@ -450,9 +450,9 @@ public class Node extends SimulationBase implements IStepable {
    *          the index to obtain the node at.
    * @return the node at the specified index
    */
-  public synchronized Node getNeighbor(final int idx) {
+  public synchronized SimNode getNeighbor(final int idx) {
     Connection c;
-    Node n;
+    SimNode n;
     c = this.m_connections.get(idx);
     n = c.getNode1();
     return ((n == this) ? (c.getNode2()) : n);
