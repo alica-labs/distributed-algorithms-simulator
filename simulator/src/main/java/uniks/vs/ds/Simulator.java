@@ -26,27 +26,25 @@
 
 package uniks.vs.ds;
 
-import uniks.vs.ds.model.NodeTypes;
+import javafx.application.Application;
+import javafx.scene.Group;
+import javafx.stage.Stage;
 import uniks.vs.ds.view.SimulationWindow;
+
 
 /**
  * the main class
  *
  * @author Thomas Weise
  */
-public class Simulator {
+public class Simulator extends Application {
 
-  /**
-   * the main program called at startup
-   *
-   * @param args
-   *          the command line arguments
-   */
-  @SuppressWarnings("unchecked")
-  public static void main(String[] args) {
+    @Override
+    public void start(Stage stage) throws Exception {
 
-    SimulationWindow w = new SimulationWindow();
-
-    w.setVisible(true);
-  }
+      Group root = new Group();
+      SimulationWindow simulationWindow = new SimulationWindow(stage, root);
+      stage.setScene(simulationWindow);
+      stage.show();
+    }
 }

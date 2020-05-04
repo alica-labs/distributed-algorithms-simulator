@@ -39,7 +39,7 @@ public interface ISimulationListener {
    * @param n
    *          the node
    */
-  public abstract void onNodeAdded(final Node n);
+  public abstract void onNodeAdded(final SimNode n);
 
   /**
    * A node was removed
@@ -47,7 +47,7 @@ public interface ISimulationListener {
    * @param n
    *          the removed node
    */
-  public abstract void onNodeRemoved(final Node n);
+  public abstract void onNodeRemoved(final SimNode n);
 
   /**
    * Two nodes were connected by a new connection

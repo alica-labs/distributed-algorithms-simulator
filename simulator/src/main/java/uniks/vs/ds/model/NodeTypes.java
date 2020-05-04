@@ -76,7 +76,7 @@ public final class NodeTypes {
    *          the class of the new node type
    */
   public static synchronized final void registerNodeType(
-      final String name, final Class<? extends Node> clazz) {
+      final String name, final Class<? extends SimNode> clazz) {
     FACTORIES.add(new DefaultNodeFactory(name, clazz));
   }
 
@@ -87,7 +87,7 @@ public final class NodeTypes {
    *          the class of the new node type
    */
   public static synchronized final void registerNodeType(
-      final Class<? extends Node> clazz) {
+      final Class<? extends SimNode> clazz) {
     FACTORIES.add(new DefaultNodeFactory(clazz));
   }
 

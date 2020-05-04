@@ -26,20 +26,18 @@
 
 package uniks.vs.ds.view;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.event.MouseEvent;
-
+import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import uniks.vs.ds.model.Connection;
 import uniks.vs.ds.model.Message;
-import uniks.vs.ds.model.Node;
+import uniks.vs.ds.model.SimNode;
 
 /**
  * This control represents a connection
  *
  * @author Thomas Weise
  */
-final class ConnectionControl extends SimCtrlBase {
+final class ConnectionControl extends SimControl {
   /**
    * the serial version uid
    */
@@ -105,7 +103,7 @@ final class ConnectionControl extends SimCtrlBase {
    */
   public ConnectionControl(final Connection connection) {
     super();
-    Node n;
+    SimNode n;
     int x1, y1, x2, y2, d;
 
     this.m_connection = connection;
@@ -173,7 +171,7 @@ final class ConnectionControl extends SimCtrlBase {
       this.m_y2 += d;
     }
 
-    this.setBounds(x1, y1, x2, y2);
+//    this.setBounds(x1, y1, x2, y2);
     this.onAfterStep();
   }
 
@@ -192,77 +190,76 @@ final class ConnectionControl extends SimCtrlBase {
    * @param g
    *          the graphics context to paint on
    */
-  @Override
-  public void paint(final Graphics g) {
-    this.doPaint(g, false);
-  }
-
-  /**
-   * Paints this node control
-   *
-   * @param g
-   *          the graphics context to paint on
-   * @param print
-   *          <code>true</code> if printing, <code>false</code>
-   *          otherwise
-   */
-  private final void doPaint(final Graphics g, final boolean print) {
-    Color oc;
-    Message msg;
-    Connection c;
-    int x, y;
-    double d;
-
-    oc = g.getColor();
-    g.setColor(this.m_connection.getColor());
-
-    g.drawLine(this.m_x1, this.m_y1, this.m_x2, this.m_y2);
-    c = this.m_connection;
-    synchronized (c) {
-      for (msg = c.getFirstQueuedMessage(); msg != null; msg = c
-          .getNextQeuedMessage(msg)) {
-        d = msg.getRemainingDistance();
-        g.setColor(msg.getColor());
-
-        if (msg.getDirection())
-          d = this.m_len - d;
-        d /= this.m_len;
-
-        x = (int) ((this.m_x2 * d) + ((1 - d) * this.m_x1)) - MSG_D2;
-        y = (int) ((this.m_y2 * d) + ((1 - d) * this.m_y1)) - MSG_D2;
-
-        g.fillOval(x, y, MSG_D - 1, MSG_D - 1);
-        if (print) {
-          g.setColor(Color.BLACK);
-          g.drawOval(x, y, MSG_D - 1, MSG_D - 1);
-        }
-      }
-    }
-
-    g.setColor(oc);
-  }
-
-  /**
-   * Prints this component.
-   *
-   * @param g
-   *          the graphics context to use for printing
-   * @see #paint(Graphics)
-   */
-  @Override
-  public void print(Graphics g) {
-    this.doPaint(g, true);
-  }
-
-  /**
-   * Processes mouse events occurring on this component by dispatching them
-   * to any registered <code>MouseListener</code> objects.
-   *
-   * @param e
-   *          the mouse event
-   */
-  @Override
-  protected void processMouseEvent(MouseEvent e) {
-    super.processMouseEvent(e);
-  }
+//  public void paint(final Node g) {
+//    this.doPaint(g, false);
+//  }
+//
+//  /**
+//   * Paints this node control
+//   *
+//   * @param g
+//   *          the graphics context to paint on
+//   * @param print
+//   *          <code>true</code> if printing, <code>false</code>
+//   *          otherwise
+//   */
+//  private final void doPaint(final Graphics g, final boolean print) {
+//    Color oc;
+//    Message msg;
+//    Connection c;
+//    int x, y;
+//    double d;
+//
+//    oc = g.getColor();
+//    g.setColor(this.m_connection.getColor());
+//
+//    g.drawLine(this.m_x1, this.m_y1, this.m_x2, this.m_y2);
+//    c = this.m_connection;
+//    synchronized (c) {
+//      for (msg = c.getFirstQueuedMessage(); msg != null; msg = c
+//          .getNextQeuedMessage(msg)) {
+//        d = msg.getRemainingDistance();
+//        g.setColor(msg.getColor());
+//
+//        if (msg.getDirection())
+//          d = this.m_len - d;
+//        d /= this.m_len;
+//
+//        x = (int) ((this.m_x2 * d) + ((1 - d) * this.m_x1)) - MSG_D2;
+//        y = (int) ((this.m_y2 * d) + ((1 - d) * this.m_y1)) - MSG_D2;
+//
+//        g.fillOval(x, y, MSG_D - 1, MSG_D - 1);
+//        if (print) {
+//          g.setColor(Color.BLACK);
+//          g.drawOval(x, y, MSG_D - 1, MSG_D - 1);
+//        }
+//      }
+//    }
+//
+//    g.setColor(oc);
+//  }
+//
+//  /**
+//   * Prints this component.
+//   *
+//   * @param g
+//   *          the graphics context to use for printing
+//   * @see #paint(Graphics)
+//   */
+//  @Override
+//  public void print(Graphics g) {
+//    this.doPaint(g, true);
+//  }
+//
+//  /**
+//   * Processes mouse events occurring on this component by dispatching them
+//   * to any registered <code>MouseListener</code> objects.
+//   *
+//   * @param e
+//   *          the mouse event
+//   */
+//  @Override
+//  protected void processMouseEvent(MouseEvent e) {
+//    super.processMouseEvent(e);
+//  }
 }

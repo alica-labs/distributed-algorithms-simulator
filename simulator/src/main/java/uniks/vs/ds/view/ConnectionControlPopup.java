@@ -27,13 +27,12 @@
 package uniks.vs.ds.view;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.EventObject;
 
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.image.ImageView;
 import org.sfc.gui.ComponentUtils;
 import org.sfc.gui.resources.icons.Icons;
 import org.sfc.gui.windows.IWindow;
@@ -46,7 +45,7 @@ import uniks.vs.ds.model.Simulation;
  *
  * @author Thomas Weise
  */
-final class ConnectionControlPopup extends JPopupMenu {
+final class ConnectionControlPopup extends ContextMenu {
   /**
    * the serial version uid
    */
@@ -55,7 +54,7 @@ final class ConnectionControlPopup extends JPopupMenu {
   /**
    * the connection control popup menu
    */
-  static final JPopupMenu CP = new ConnectionControlPopup();
+  static final ContextMenu CONTEXT_MENU = new ConnectionControlPopup();
 
   /**
    * The popup menu of connection controls
@@ -63,11 +62,10 @@ final class ConnectionControlPopup extends JPopupMenu {
   ConnectionControlPopup() {
     super();
 
-    JMenuItem j;
+    MenuItem menuItem;
 
-    j = new JMenuItem("info"); //$NON-NLS-1$
-    j.addActionListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent ae) {
+    menuItem = new MenuItem("info"); //$NON-NLS-1$
+    menuItem.setOnAction( ae ->  {
         ConnectionControl c;
         Connection n;
         c = getControl(ae);
@@ -76,16 +74,15 @@ final class ConnectionControlPopup extends JPopupMenu {
           if (n != null)
             PropertyWindow.showProperties(n);
         }
-      }
     });
-    j.setIcon(Icons.INFO);
-    this.add(j);
+    menuItem.setGraphic(new ImageView(Icons.INFO));
+    this.getItems().add(menuItem);
 
-    this.addSeparator();
+    SeparatorMenuItem separator = new SeparatorMenuItem();
+    this.getItems().add(separator);
 
-    j = new JMenuItem("speed"); //$NON-NLS-1$
-    j.addActionListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent ae) {
+    menuItem = new MenuItem("speed"); //$NON-NLS-1$
+    menuItem.setOnAction( ae ->  {
         ConnectionControl c;
         Connection n;
         IWindow w;
@@ -96,15 +93,13 @@ final class ConnectionControlPopup extends JPopupMenu {
             w = ComponentUtils.getWindow(c);
             SpeedDialog.showDialog((w != null) ? w.getFrame() : null, n);
           }
-        }
       }
     });
-    j.setIcon(Icons.SPEED);
-    this.add(j);
+    menuItem.setGraphic(new ImageView(Icons.SPEED));
+    this.getItems().add(menuItem);
 
-    j = new JMenuItem("step"); //$NON-NLS-1$
-    j.addActionListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent ae) {
+    menuItem = new MenuItem("step"); //$NON-NLS-1$
+    menuItem.setOnAction( ae ->  {
         ConnectionControl c;
         Connection n;
         c = getControl(ae);
@@ -114,14 +109,12 @@ final class ConnectionControlPopup extends JPopupMenu {
             n.step();
           }
         }
-      }
     });
-    j.setIcon(Icons.APPLY);
-    this.add(j);
+    menuItem.setGraphic(new ImageView(Icons.APPLY));
+    this.getItems().add(menuItem);
 
-    j = new JMenuItem("reset"); //$NON-NLS-1$
-    j.addActionListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent ae) {
+    menuItem = new MenuItem("reset"); //$NON-NLS-1$
+    menuItem.setOnAction( ae ->  {
         ConnectionControl c;
         Connection n;
         c = getControl(ae);
@@ -131,17 +124,16 @@ final class ConnectionControlPopup extends JPopupMenu {
             n.reset();
             SpeedDialog.reset(n);
           }
-        }
       }
     });
-    j.setIcon(Icons.RESET);
-    this.add(j);
+    menuItem.setGraphic(new ImageView(Icons.RESET));
+    this.getItems().add(menuItem);
 
-    this.addSeparator();
+    separator = new SeparatorMenuItem();
+    this.getItems().add(separator);
 
-    j = new JMenuItem("delete"); //$NON-NLS-1$
-    j.addActionListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent ae) {
+    menuItem = new MenuItem("delete"); //$NON-NLS-1$
+    menuItem.setOnAction( ae ->  {
         ConnectionControl c;
         Simulation s;
         Connection n;
@@ -156,10 +148,9 @@ final class ConnectionControlPopup extends JPopupMenu {
             PropertyWindow.closeSpecificWindow(n);
           }
         }
-      }
     });
-    j.setIcon(Icons.DELETE);
-    this.add(j);
+    menuItem.setGraphic(new ImageView(Icons.DELETE));
+    this.getItems().add(menuItem);
   }
 
   /**
@@ -170,25 +161,26 @@ final class ConnectionControlPopup extends JPopupMenu {
    * @return the connection control
    */
   static final ConnectionControl getControl(final EventObject ae) {
-    Object o;
+    Object object;
 
-    o = ae.getSource();
+    object = ae.getSource();
     for (;;) {
-      if (o == null)
+      if (object == null)
         return null;
-      if (o instanceof ConnectionControl)
-        return ((ConnectionControl) o);
-      if (o instanceof JPopupMenu)
+      if (object instanceof ConnectionControl)
+        return ((ConnectionControl) object);
+      if (object instanceof ContextMenu)
         break;
-      if (o instanceof Component) {
-        o = ((Component) o).getParent();
+      if (object instanceof Component) {
+        object = ((Component) object).getParent();
       } else
         return null;
     }
 
-    o = ((JPopupMenu) o).getInvoker();
-    if (o instanceof ConnectionControl)
-      return ((ConnectionControl) o);
+//    object = ((ContextMenu) object).getInvoker();
+    object = ((ContextMenu) object).getAnchorLocation();
+    if (object instanceof ConnectionControl)
+      return ((ConnectionControl) object);
     return null;
   }
 

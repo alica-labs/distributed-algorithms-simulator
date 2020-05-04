@@ -115,18 +115,12 @@ public final class Multiplication {
   // {
   //           
   // d = l*m*n;
-  // System.gc();
   // mat_a = new double[m*l];
-  // System.gc();
   // matB = new double[l*n];
-  // System.gc();
   // mat_c = new double[m*n];
-  // System.gc();
   // mat_d = new double[m*n];
-  // System.gc();
   // swap = new double[n+m+l];
-  // System.gc();
-  //            
+  //
   // k = 0;
   // for(i = 0; i < m; i++)
   // {
@@ -161,8 +155,7 @@ public final class Multiplication {
   // c = System.currentTimeMillis();
   //            
   // mat_a = null; matB = null; swap = null;
-  // System.gc();
-  //            
+  //
   // k = 0;
   // for(i = 0; i < m; i++)
   // {
@@ -181,7 +174,6 @@ public final class Multiplication {
   // }
   //            
   // mat_c = null; mat_d = null;
-  // System.gc();
   // }
   // }
   // }

@@ -26,14 +26,18 @@
 
 package uniks.vs.ds.view;
 
-import javax.swing.JComponent;
+import javafx.scene.Node;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.Pane;
 
 /**
  * the basic simulation control
  *
  * @author Thomas Weise
  */
-class SimCtrlBase extends JComponent {
+class SimControl extends Pane {
+  private Tooltip toolTip;
+
   /**
    * the serial version uid
    */
@@ -43,6 +47,41 @@ class SimCtrlBase extends JComponent {
    * the text has changed
    */
   protected void onAfterStep() {
-    this.revalidate();
+    //this.revalidate();
   }
+
+  protected void setComponentZOrder(NodeControl nodeControl, int order) {
+    this.getChildren().add(order, nodeControl);
+  }
+
+//  protected void paint(Graphics g) {
+//
+//  }
+
+  protected void setToolTipText(String text) {
+    if (this.toolTip == null) {
+      Tooltip toolTip = new Tooltip();
+      toolTip.setStyle("-fx-font: normal bold 4 Langdon; "
+              + "-fx-base: #AE3522; "
+              + "-fx-text-fill: orange;");
+      this.setTooltip(toolTip);
+    }
+    toolTip.setText(text);
+  }
+
+  protected void setTooltip(Tooltip tooltip) {
+    this.toolTip = tooltip;
+  }
+
+  protected String getToolTipText() {
+    return this.toolTip.getText();
+  }
+
+//  public double getWidth() {
+//    return 1;
+//  }
+//
+//  public double getHeight() {
+//    return 1;
+//  }
 }

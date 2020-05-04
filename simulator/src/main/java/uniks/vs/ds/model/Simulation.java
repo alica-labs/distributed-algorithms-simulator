@@ -52,7 +52,7 @@ public class Simulation extends ModelBase implements IStepable {
   /**
    * the list of nodes
    */
-  private final List<Node> m_nodes;
+  private final List<SimNode> m_Sim_nodes;
 
   /**
    * the list of connections
@@ -79,7 +79,7 @@ public class Simulation extends ModelBase implements IStepable {
    */
   public Simulation() {
     super();
-    this.m_nodes = CollectionUtils.createList(-1);
+    this.m_Sim_nodes = CollectionUtils.createList(-1);
     this.m_connections = CollectionUtils.createList(-1);
     this.m_listeners = CollectionUtils.createList(-1);
   }
@@ -89,10 +89,10 @@ public class Simulation extends ModelBase implements IStepable {
    */
   public synchronized void step() {
     int i;
-    List<Node> n;
+    List<SimNode> n;
     List<Connection> c;
 
-    n = this.m_nodes;
+    n = this.m_Sim_nodes;
     for (i = (n.size() - 1); i >= 0; i--) {
       if (i < n.size()) {
         n.get(i).step();
@@ -115,11 +115,11 @@ public class Simulation extends ModelBase implements IStepable {
    * @param n
    *          the node to be removed
    */
-  public synchronized void removeNode(final Node n) {
+  public synchronized void removeNode(final SimNode n) {
     int i;
     List<Connection> cc;
 
-    if (this.m_nodes.remove(n)) {
+    if (this.m_Sim_nodes.remove(n)) {
       cc = n.m_connections;
       for (i = (cc.size() - 1); i >= 0; i--) {
         this.disconnect(cc.get(i));
@@ -140,8 +140,8 @@ public class Simulation extends ModelBase implements IStepable {
    * @param n
    *          the node added
    */
-  public synchronized void addNode(final Node n) {
-    if ((!(this.m_nodes.contains(n))) && (this.m_nodes.add(n))) {
+  public synchronized void addNode(final SimNode n) {
+    if ((!(this.m_Sim_nodes.contains(n))) && (this.m_Sim_nodes.add(n))) {
       synchronized (n) {
         n.m_sim = this;
         n.setId(++this.m_idCnt);
@@ -160,7 +160,7 @@ public class Simulation extends ModelBase implements IStepable {
    *          the connection to be removed
    */
   public synchronized void disconnect(final Connection con) {
-    Node n;
+    SimNode n;
     if (this.m_connections.remove(con)) {
       n = con.getNode1();
       synchronized (n) {
@@ -208,7 +208,7 @@ public class Simulation extends ModelBase implements IStepable {
    *          the second node to be connected
    * @return the new connection
    */
-  public synchronized Connection connectNodes(final Node n1, final Node n2) {
+  public synchronized Connection connectNodes(final SimNode n1, final SimNode n2) {
     Connection n;
 
     synchronized (n1) {
@@ -249,7 +249,7 @@ public class Simulation extends ModelBase implements IStepable {
    * @return the current node count
    */
   public synchronized int getNodeCount() {
-    return this.m_nodes.size();
+    return this.m_Sim_nodes.size();
   }
 
   /**
@@ -259,8 +259,8 @@ public class Simulation extends ModelBase implements IStepable {
    *          the index to obtain the node at
    * @return the node at the specified index.
    */
-  public synchronized Node getNode(final int index) {
-    return this.m_nodes.get(index);
+  public synchronized SimNode getNode(final int index) {
+    return this.m_Sim_nodes.get(index);
   }
 
   /**
@@ -325,7 +325,7 @@ public class Simulation extends ModelBase implements IStepable {
   @Override
   public synchronized void reset() {
     List<Connection> m;
-    List<Node> n;
+    List<SimNode> n;
     int i;
 
     m = this.m_connections;
@@ -333,7 +333,7 @@ public class Simulation extends ModelBase implements IStepable {
       m.get(i).reset();
     }
 
-    n = this.m_nodes;
+    n = this.m_Sim_nodes;
     for (i = (n.size() - 1); i >= 0; i--) {
       n.get(i).reset();
     }
@@ -353,7 +353,7 @@ public class Simulation extends ModelBase implements IStepable {
   @Override
   public synchronized void writeProperties(final IPropertyDest pd) {
     super.writeProperties(pd);
-    pd.writeProperty("#nodes", String.valueOf(this.m_nodes.size()));//$NON-NLS-1$
+    pd.writeProperty("#nodes", String.valueOf(this.m_Sim_nodes.size()));//$NON-NLS-1$
     pd.writeProperty(
         "#connections", String.valueOf(this.m_connections.size()));//$NON-NLS-1$
     pd.writeProperty("#msg", String.valueOf(this.m_msgCount));//$NON-NLS-1$
@@ -363,10 +363,10 @@ public class Simulation extends ModelBase implements IStepable {
    * trigger all nodes
    */
   public synchronized void trigger() {
-    List<Node> n;
+    List<SimNode> n;
     int i;
 
-    n = this.m_nodes;
+    n = this.m_Sim_nodes;
     for (i = (n.size() - 1); i >= 0; i--) {
       n.get(i).trigger();
     }

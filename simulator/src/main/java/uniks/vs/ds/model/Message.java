@@ -40,12 +40,12 @@ public class Message extends SimulationBase implements Cloneable {
   /**
    * the source node
    */
-  Node m_source;
+  SimNode m_source;
 
   /**
    * the destination node
    */
-  Node m_dest;
+  SimNode m_dest;
 
   /**
    * the message queue
@@ -79,7 +79,7 @@ public class Message extends SimulationBase implements Cloneable {
    *
    * @return the source node
    */
-  public Node getSource() {
+  public SimNode getSource() {
     return this.m_source;
   }
 
@@ -88,7 +88,7 @@ public class Message extends SimulationBase implements Cloneable {
    *
    * @return the destination node
    */
-  public Node getDestination() {
+  public SimNode getDestination() {
     return this.m_dest;
   }
 
