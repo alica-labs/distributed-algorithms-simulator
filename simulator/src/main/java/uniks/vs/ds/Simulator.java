@@ -28,12 +28,7 @@ package uniks.vs.ds;
 
 import javafx.application.Application;
 import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import uniks.vs.ds.algorithms.test.TestSimNode;
-import uniks.vs.ds.model.NodeTypes;
 import uniks.vs.ds.view.SimulationWindow;
 
 
@@ -47,7 +42,6 @@ public class Simulator extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-      NodeTypes.registerNodeType(TestSimNode.class);
       Group root = new Group();
       SimulationWindow simulationWindow = new SimulationWindow(stage, root);
       stage.setScene(simulationWindow);
