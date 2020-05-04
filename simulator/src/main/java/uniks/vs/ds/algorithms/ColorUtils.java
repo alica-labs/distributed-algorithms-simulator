@@ -65,8 +65,8 @@ public final class ColorUtils {
 
 		l = CollectionUtils.createList();
 		s = CollectionUtils.createList();
-//		l.add(Color.WHITE);
-//		s.add("white"); //$NON-NLS-1$
+		l.add(Color.WHITE);
+		s.add("white"); //$NON-NLS-1$
 		l.add(Color.ORANGE);
 		s.add("orange"); //$NON-NLS-1$
 		l.add(Color.RED);

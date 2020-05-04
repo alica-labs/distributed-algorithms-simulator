@@ -26,6 +26,8 @@
 
 package uniks.vs.ds.view;
 
+import javax.swing.JFileChooser;
+
 import org.sfc.gui.FileChooser;
 import org.sfc.gui.Printer;
 import org.sfc.gui.Printer.DefaultBook;
@@ -58,7 +60,7 @@ final class SimulationIO {
 
     fc = new FileChooser();
     fc.setFileFilter(FILTER);
-    if (FileChooser.APPROVE_OPTION == fc.showSaveDialog(null)) {
+    if (JFileChooser.APPROVE_OPTION == fc.showSaveDialog(null)) {
       Simulation.storeSimulation(sim, fc.getSelectedFile());
     }
   }
@@ -74,7 +76,7 @@ final class SimulationIO {
 
     fc = new FileChooser();
     fc.setFileFilter(FILTER);
-    if (FileChooser.APPROVE_OPTION == fc.showOpenDialog(null)) {
+    if (JFileChooser.APPROVE_OPTION == fc.showOpenDialog(null)) {
       return Simulation.loadSimulation(fc.getSelectedFile());
     }
     return null;
@@ -92,9 +94,9 @@ final class SimulationIO {
     synchronized (vc) {
       synchronized (vc.getSimulation()) {
 
-//        b = Printer.createBook("Simulation Print"); //$NON-NLS-1$
-//        b.appendComponent(vc);
-//        b.print();
+        b = Printer.createBook("Simulation Print"); //$NON-NLS-1$
+        b.appendComponent(vc);
+        b.print();
       }
     }
   }

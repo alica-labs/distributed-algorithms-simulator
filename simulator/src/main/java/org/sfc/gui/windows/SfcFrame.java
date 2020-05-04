@@ -28,11 +28,15 @@
 
 package org.sfc.gui.windows;
 
+import java.awt.Frame;
+import java.awt.Image;
+import java.awt.Window;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+
+import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import javafx.scene.Group;
-import javafx.scene.image.Image;
-import javafx.stage.Stage;
 import org.sfc.scoped.ICloseable;
 
 /**
@@ -41,7 +45,7 @@ import org.sfc.scoped.ICloseable;
  * 
  * @author Thomas Weise
  */
-public class SfcFrame extends IFXWindow {
+public class SfcFrame extends JFrame implements IWindow {
   /**
    * The serial version uid.
    */
@@ -50,51 +54,49 @@ public class SfcFrame extends IFXWindow {
   /**
    * The globally shared window listener constant
    */
-//  static final WindowListener CLOSER = new WindowListener() {
-//    public void windowOpened(final WindowEvent e) {
-//      //
-//    }
-//
-//    public void windowClosing(final WindowEvent e) {
-//      ((IWindow) (e.getWindow())).closeByUser();
-//    }
-//
-//    public void windowClosed(final WindowEvent e) {
-//      //
-//    }
-//
-//    public void windowIconified(final WindowEvent e) {
-//      //
-//    }
-//
-//    public void windowDeiconified(final WindowEvent e) {
-//      //
-//    }
-//
-//    public void windowActivated(final WindowEvent e) {
-//      //
-//    }
-//
-//    public void windowDeactivated(final WindowEvent e) {
-//      //
-//    }
-//
-//  };
+  static final WindowListener CLOSER = new WindowListener() {
+    public void windowOpened(final WindowEvent e) {
+      //
+    }
+
+    public void windowClosing(final WindowEvent e) {
+      ((IWindow) (e.getWindow())).closeByUser();
+    }
+
+    public void windowClosed(final WindowEvent e) {
+      //
+    }
+
+    public void windowIconified(final WindowEvent e) {
+      //
+    }
+
+    public void windowDeiconified(final WindowEvent e) {
+      //
+    }
+
+    public void windowActivated(final WindowEvent e) {
+      //
+    }
+
+    public void windowDeactivated(final WindowEvent e) {
+      //
+    }
+
+  };
 
   /**
    * the internal closeable instance
    */
   private ICloseable m_closeable;
-  private Image icon;
-
 
   /**
    * Create a new <code>SfcFrame</code>.
    */
-  public SfcFrame(Stage stage, Group root) {
-    super(stage, root);
-//    this.m_closeable = new WindowCloseable(this);
-//    this.addWindowListener(CLOSER);
+  public SfcFrame() {
+    super();
+    this.m_closeable = new WindowCloseable(this);
+    this.addWindowListener(CLOSER);
   }
 
   /**
@@ -103,7 +105,7 @@ public class SfcFrame extends IFXWindow {
    * @return The icon of the window or null if no icon is assigned.
    */
   public Image getIcon() {
-    return this.icon;
+    return this.getIconImage();
   }
 
   /**
@@ -113,8 +115,7 @@ public class SfcFrame extends IFXWindow {
    *          The icon of the window.
    */
   public void setIcon(Image icon) {
-    this.icon = icon;
-    getFrame().getIcons().add(icon);
+    this.setIconImage(icon);
   }
 
   /**
@@ -122,17 +123,17 @@ public class SfcFrame extends IFXWindow {
    * 
    * @return The window-instance of this <code>IWindow</code>.
    */
-//  public Window getWindow() {
-//    return this.stage.getOwner();
-//  }
+  public Window getWindow() {
+    return this;
+  }
 
   /**
    * Returns the underlying frame of the <code>IWindow</code>.
    * 
    * @return The frame-instance of this <code>IWindow</code>.
    */
-  public Stage getFrame() {
-    return this.stage;
+  public Frame getFrame() {
+    return this;
   }
 
   /**
@@ -155,9 +156,9 @@ public class SfcFrame extends IFXWindow {
    */
   public synchronized void closeByUser() {
     this.close();
-//    if (this.getDefaultCloseOperation() == EXIT_ON_CLOSE) {
-//      System.exit(0);
-//    }
+    if (this.getDefaultCloseOperation() == EXIT_ON_CLOSE) {
+      System.exit(0);
+    }
   }
 
   /**
@@ -176,10 +177,10 @@ public class SfcFrame extends IFXWindow {
    *           <code>SecurityManager</code> will not allow the caller to
    *           invoke <code>System.exit</code>
    */
-//  @Override
-//  public synchronized void setDefaultCloseOperation(int operation) {
-//    super.setDefaultCloseOperation(operation);
-//  }
+  @Override
+  public synchronized void setDefaultCloseOperation(int operation) {
+    super.setDefaultCloseOperation(operation);
+  }
 
   /**
    * This method must only be called for windows that have been closed and
@@ -188,7 +189,7 @@ public class SfcFrame extends IFXWindow {
   public synchronized void reuse() {
     if (this.m_closeable != null)
       throw new IllegalStateException();
-//    this.m_closeable = new WindowCloseable(this);
+    this.m_closeable = new WindowCloseable(this);
   }
 
 }

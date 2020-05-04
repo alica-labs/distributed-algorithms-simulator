@@ -28,17 +28,17 @@
 
 package org.sfc.gui.simulation;
 
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.ColumnConstraints;
+import java.awt.Container;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.LayoutManager;
 
-import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+
+import org.sfc.gui.ComponentUtils;
 import org.sfc.gui.SfcComponent;
 import org.sfc.gui.windows.SfcFrame;
-
 import org.sfc.parallel.simulation.IStepable;
 import org.sfc.parallel.simulation.SimulationThread;
 
@@ -66,12 +66,12 @@ public class SimulationFrame extends SfcFrame implements IStepable {
   /**
    * the simulation control
    */
-  private volatile Node m_simVis;
+  private volatile JComponent m_simVis;
 
   /**
    * the component to be updated after each step
    */
-  private volatile Node m_update;
+  private volatile JComponent m_update;
 
   /**
    * the simulation
@@ -81,32 +81,21 @@ public class SimulationFrame extends SfcFrame implements IStepable {
   /**
    * Create a new simulation frame
    */
-  public SimulationFrame(Stage stage, Group root) {
-    super(stage, root);
+  public SimulationFrame() {
+    super();
     SfcComponent s;
 
     this.m_thread = this.createSimulationThread(this);
     this.m_simCtrl = this.createSimulationControl(this.m_thread);
 
-//    this.setContentPane(s = new SfcComponent());
-//    s.getColumnConstraints().addAll(new ColumnConstraints());
+    this.setContentPane(s = new SfcComponent());
+    s.setLayout(new GridBagLayout());
 
-//    ComponentUtils.putGrid(s, this.m_simCtrl, 0, 1, 1, 1, 1, 0,
-//        GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL);
+    ComponentUtils.putGrid(s, this.m_simCtrl, 0, 1, 1, 1, 1, 0,
+        GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL);
 
     this.setSize(700, 500);
   }
-
-
-//  @Override
-//  public void start(Stage stage) {
-//    Group root =new Group();
-////    root.getChildren().add(node);
-//    Scene scene = new Scene(root, 300, 100);
-//    stage.setTitle("JavaFX Fenster");
-//    stage.setScene(scene);
-//    stage.show();
-//  }
 
   /**
    * Start the worker thread
@@ -134,22 +123,22 @@ public class SimulationFrame extends SfcFrame implements IStepable {
    *          <code>vis</code>, or some component contained in
    *          <code>vis</code>)
    */
-  public synchronized void setVisualization(final Node vis,
-      final Node upd) {
-    GridPane c;
-//    LayoutManager l;
+  public synchronized void setVisualization(final JComponent vis,
+      final JComponent upd) {
+    Container c;
+    LayoutManager l;
     c = this.getContentPane();
     if (this.m_simVis != null) {
-//      l = c.getLayout();
-//      c.remove(this.m_simVis);
-//      l.removeLayoutComponent(this.m_simVis);
+      l = c.getLayout();
+      c.remove(this.m_simVis);
+      l.removeLayoutComponent(this.m_simVis);
     }
     this.m_simVis = ((vis == null) ? upd : vis);
     this.m_update = ((upd == null) ? vis : upd);
 
     if (vis != null) {
-//      ComponentUtils.putGrid(c, vis, 0, 0, 1, 1, 1, 1,
-//          GridBagConstraints.CENTER, GridBagConstraints.BOTH);
+      ComponentUtils.putGrid(c, vis, 0, 0, 1, 1, 1, 1,
+          GridBagConstraints.CENTER, GridBagConstraints.BOTH);
     }
 
     this.repaint();
@@ -161,7 +150,7 @@ public class SimulationFrame extends SfcFrame implements IStepable {
    * @param button
    *          the button to be added
    */
-  public void addControlButton(final Button button) {
+  public void addControlButton(final JButton button) {
     this.m_simCtrl.addButton(button);
   }
 
@@ -203,10 +192,10 @@ public class SimulationFrame extends SfcFrame implements IStepable {
    * Update the visualization
    */
   protected synchronized void updateVisualization() {
-    Node j;
+    JComponent j;
     j = this.m_update;
-//    if (j != null)
-//      j.repaint();
+    if (j != null)
+      j.repaint();
 
   }
 

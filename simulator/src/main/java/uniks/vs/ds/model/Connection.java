@@ -26,7 +26,8 @@
 
 package uniks.vs.ds.model;
 
-import javafx.scene.paint.Color;
+import java.awt.Color;
+
 import org.sfc.parallel.simulation.IStepable;
 
 /**
@@ -48,12 +49,12 @@ public class Connection extends SimulationBase implements IStepable {
   /**
    * The first node of the connection
    */
-  private final SimNode m_Sim_node1;
+  private final Node m_node1;
 
   /**
    * The second node of the connection
    */
-  private final SimNode m_Sim_node2;
+  private final Node m_node2;
 
   /**
    * the length
@@ -88,13 +89,13 @@ public class Connection extends SimulationBase implements IStepable {
    * @param n2
    *          The second node of the connection
    */
-  Connection(final SimNode n1, final SimNode n2) {
+  Connection(final Node n1, final Node n2) {
     super();
 
     int x, y;
 
-    this.m_Sim_node1 = n1;
-    this.m_Sim_node2 = n2;
+    this.m_node1 = n1;
+    this.m_node2 = n2;
     this.m_speed = DEFAULT_SPEED;
 
     x = n1.getX();
@@ -121,8 +122,8 @@ public class Connection extends SimulationBase implements IStepable {
    *
    * @return the first node of the connection
    */
-  public SimNode getNode1() {
-    return this.m_Sim_node1;
+  public Node getNode1() {
+    return this.m_node1;
   }
 
   /**
@@ -130,8 +131,8 @@ public class Connection extends SimulationBase implements IStepable {
    *
    * @return the second node of the connection
    */
-  public SimNode getNode2() {
-    return this.m_Sim_node2;
+  public Node getNode2() {
+    return this.m_node2;
   }
 
   /**
@@ -215,9 +216,9 @@ public class Connection extends SimulationBase implements IStepable {
   @Override
   public void toStringBuilder(final StringBuilder sb) {
     sb.append("connection: "); //$NON-NLS-1$
-    sb.append(this.m_Sim_node1.getID());
+    sb.append(this.m_node1.getID());
     sb.append("<->"); //$NON-NLS-1$
-    sb.append(this.m_Sim_node2.getID());
+    sb.append(this.m_node2.getID());
   }
 
   /**
@@ -294,8 +295,8 @@ public class Connection extends SimulationBase implements IStepable {
   @Override
   public synchronized void writeProperties(final IPropertyDest pd) {
     super.writeProperties(pd);
-    pd.writeProperty("node 1", String.valueOf(this.m_Sim_node1.getID()));//$NON-NLS-1$
-    pd.writeProperty("node 2", String.valueOf(this.m_Sim_node2.getID()));//$NON-NLS-1$
+    pd.writeProperty("node 1", String.valueOf(this.m_node1.getID()));//$NON-NLS-1$
+    pd.writeProperty("node 2", String.valueOf(this.m_node2.getID()));//$NON-NLS-1$
     pd.writeProperty("speed", String.valueOf(this.m_speed));//$NON-NLS-1$
     pd.writeProperty("#msgs", String.valueOf(this.m_msgCount));//$NON-NLS-1$
   }

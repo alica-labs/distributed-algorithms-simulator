@@ -26,67 +26,72 @@
 
 package uniks.vs.ds.view;
 
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.scene.Node;
-import javafx.scene.input.ContextMenuEvent;
-import javafx.scene.input.MouseEvent;
-
-import javafx.scene.layout.Pane;
-import org.sfc.collections.CollectionUtils;
-import org.sfc.gui.PopupMouseEventHandler;
-import uniks.vs.ds.model.*;
-
-import java.util.ArrayList;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Map;
+
+import org.sfc.collections.CollectionUtils;
+import org.sfc.gui.PopupMouseListener;
+
+import uniks.vs.ds.model.Connection;
+import uniks.vs.ds.model.ISimulationListener;
+import uniks.vs.ds.model.ModelBase;
+import uniks.vs.ds.model.Node;
+import uniks.vs.ds.model.Simulation;
 
 /**
  * This control represents a whole simulation
  *
  * @author Thomas Weise
  */
-final class VisualizationControl extends SimControl implements ISimulationListener {
+final class VisualizationControl extends SimCtrlBase implements
+    ISimulationListener {
+  /**
+   * the serial version uid
+   */
   private static final long serialVersionUID = 1L;
 
-  static final EventHandler POPUP_MOUSE_EVENT_HANDLER = new PopupMouseEventHandler ( new VisualizationControlPopup() ) {
+  /**
+   * the mouse listener
+   */
+  static final MouseListener ML = new PopupMouseListener(
+      new VisualizationControlPopup()) {
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected boolean shouldPopup(final ContextMenuEvent e) {
-      Object object;
-      VisualizationControl visualizationControl;
-      Node component;
-      int i;
-      double x, y, vx, vy;
-      ConnectionControl connectionControl;
+    protected boolean shouldPopup(final MouseEvent e) {
+      Object o;
+      VisualizationControl v;
+      Component c;
+      int i, x, y, vx, vy;
+      ConnectionControl cc;
 
       if (super.shouldPopup(e)) {
-        object = e.getSource();
-
-        if (!(object instanceof VisualizationControl))
+        o = e.getSource();
+        if (!(o instanceof VisualizationControl))
           return false;
 
-        visualizationControl = ((VisualizationControl) object);
+        v = ((VisualizationControl) o);
         x = e.getX();
         y = e.getY();
-
-        synchronized (visualizationControl) {
-
-          for (i = (visualizationControl.getComponentCount() - 1); i >= 0; i--) {
-            component = visualizationControl.getComponent(i);
-
-            if (component instanceof ConnectionControl) {
-              connectionControl = ((ConnectionControl) component);
-              vx = x - connectionControl.m_tx;
-              vy = y - connectionControl.m_ty;
-
-              if ((vx >= 0) && (vx < connectionControl.getWidth()) && (vy >= 0)
-                  && (vy <= connectionControl.getHeight())) {
+        synchronized (v) {
+          for (i = (v.getComponentCount() - 1); i >= 0; i--) {
+            c = v.getComponent(i);
+            if (c instanceof ConnectionControl) {
+              cc = ((ConnectionControl) c);
+              vx = x - cc.m_tx;
+              vy = y - cc.m_ty;
+              if ((vx >= 0) && (vx < cc.getWidth()) && (vy >= 0)
+                  && (vy <= cc.getHeight())) {
 
                 if (Math
-                    .abs((((vx - connectionControl.m_x1) * (connectionControl.m_y2 - connectionControl.m_y1)) - ((vy - connectionControl.m_y1) * (connectionControl.m_x2 - connectionControl.m_x1)))
-                        / connectionControl.m_r) < 11) {
-                  ConnectionControlPopup.CONTEXT_MENU.show(connectionControl, vx, vy);
+                    .abs((((vx - cc.m_x1) * (cc.m_y2 - cc.m_y1)) - ((vy - cc.m_y1) * (cc.m_x2 - cc.m_x1)))
+                        / cc.m_r) < 11) {
+                  ConnectionControlPopup.CP.show(cc, vx, vy);
                   return false;
                 }
 
@@ -101,29 +106,64 @@ final class VisualizationControl extends SimControl implements ISimulationListen
     }
 
     @Override
-    protected synchronized void popup(final ContextMenuEvent e) {
+    protected synchronized void popup(final MouseEvent e) {
       super.popup(e);
-      VisualizationControlPopup.s_x = e.getScreenX();
-      VisualizationControlPopup.s_y = e.getScreenY();
+      VisualizationControlPopup.s_x = e.getX();
+      VisualizationControlPopup.s_y = e.getY();
     }
+
   };
 
-  private  Simulation simulation;
-  private  Map<SimNode, NodeControl> nodeControls;
-  private  Map<Connection, ConnectionControl> connectionControls;
-  private int maxX;
-  private int maxY;
-  private int nodeZOrder;
-  NodeControl nodeControl;
+  /**
+   * the simulation this control belongs to
+   */
+  private final Simulation m_simulation;
 
+  /**
+   * the node controls
+   */
+  private final Map<Node, NodeControl> m_nCtrl;
+
+  /**
+   * the connection controls
+   */
+  private final Map<Connection, ConnectionControl> m_cCtrl;
+
+  /**
+   * the max x
+   */
+  private int m_maxX;
+
+  /**
+   * the max y
+   */
+  private int m_maxY;
+
+  /**
+   * the node z order
+   */
+  private int m_nodeZ;
+
+  /**
+   * the selected node control
+   */
+  NodeControl m_sel;
+
+  /**
+   * create a new simulation control
+   *
+   * @param simulation
+   *          the simulation this control belongs to
+   */
   public VisualizationControl(final Simulation simulation) {
     super();
-    int i;
-    this.simulation = simulation;
-    this.nodeControls = CollectionUtils.createMap();
-    this.connectionControls = CollectionUtils.createMap();
 
-    this.simulation.addListener(this);
+    int i;
+
+    this.m_simulation = simulation;
+    this.m_nCtrl = CollectionUtils.createMap();
+    this.m_cCtrl = CollectionUtils.createMap();
+    this.m_simulation.addListener(this);
 
     synchronized (simulation) {
       for (i = (simulation.getNodeCount() - 1); i >= 0; i--) {
@@ -134,48 +174,21 @@ final class VisualizationControl extends SimControl implements ISimulationListen
       }
     }
 
-    this.removeEventHandler(Event.ANY, new EventHandler<Event>() {
+    this.addContainerListener(new ContainerListener() {
+      public void componentAdded(ContainerEvent e) {//
+      }
 
-      @Override
-      public void handle(Event event) {
-        System.out.println("VC: implementation missing !!");
-
-        if (event.getSource() == VisualizationControl.this.nodeControl) {
-          VisualizationControl.this.nodeControl = null;
+      public void componentRemoved(ContainerEvent e) {
+        if (e.getChild() == VisualizationControl.this.m_sel) {
+          VisualizationControl.this.m_sel = null;
         }
       }
-      public void componentAdded(Event e) {//
-      }
+    }
 
-      public void componentRemoved(Event e) {
-        if (e.getSource() == VisualizationControl.this.nodeControl) {
-          VisualizationControl.this.nodeControl = null;
-        }
-      }
-    });
-
-//    this.addEventHandler(Event.ANY, new EventHandler<Event>() {
-//
-//      @Override
-//      public void handle(Event event) {
-//        System.out.println("VC: implementation missing !!");
-//
-//        if (event.getSource() == VisualizationControl.this.nodeControl) {
-//          VisualizationControl.this.nodeControl = null;
-//        }
-//      }
-//      public void componentAdded(Event e) {//
-//      }
-//
-//      public void componentRemoved(Event e) {
-//        if (e.getSource() == VisualizationControl.this.nodeControl) {
-//          VisualizationControl.this.nodeControl = null;
-//        }
-//      }
-//    });
+    );
 
     this.onAfterStep();
-    this.setOnContextMenuRequested(POPUP_MOUSE_EVENT_HANDLER);
+    this.addMouseListener(ML);
   }
 
   /**
@@ -184,26 +197,38 @@ final class VisualizationControl extends SimControl implements ISimulationListen
    * @return the simulation this control is used for
    */
   public Simulation getSimulation() {
-    return this.simulation;
+    return this.m_simulation;
   }
 
-  public void onNodeAdded(final SimNode simNode) {
-    NodeControl nodeControl;
+  /**
+   * A node was added
+   *
+   * @param n
+   *          the node
+   */
+  public void onNodeAdded(final Node n) {
+    NodeControl c;
 
-    nodeControl = new NodeControl(simNode);
-    this.nodeControls.put(simNode, nodeControl);
-//    this.getChildren().add(nodeControl);
-    this.setComponentZOrder(nodeControl, this.nodeZOrder++);
+    c = new NodeControl(n);
+    this.m_nCtrl.put(n, c);
+    this.add(c);
+    this.setComponentZOrder(c, this.m_nodeZ++);
     this.onAfterStep();
   }
 
-  public void onNodeRemoved(final SimNode n) {
-    Node c;
+  /**
+   * A node was removed
+   *
+   * @param n
+   *          the removed node
+   */
+  public void onNodeRemoved(final Node n) {
+    Component c;
 
-    c = this.nodeControls.remove(n);
+    c = this.m_nCtrl.remove(n);
     if (c != null) {
-      this.getChildren().remove(c);
-      this.nodeZOrder--;
+      this.remove(c);
+      this.m_nodeZ--;
     }
     this.onAfterStep();
   }
@@ -218,8 +243,8 @@ final class VisualizationControl extends SimControl implements ISimulationListen
     ConnectionControl c;
 
     c = new ConnectionControl(newCon);
-    this.connectionControls.put(newCon, c);
-    this.getChildren().add(c);
+    this.m_cCtrl.put(newCon, c);
+    this.add(c);
     this.onAfterStep();
   }
 
@@ -230,11 +255,11 @@ final class VisualizationControl extends SimControl implements ISimulationListen
    *          the removed connection
    */
   public void onNodesDisconnected(final Connection disCon) {
-    ConnectionControl connectionControl;
-    connectionControl = this.connectionControls.remove(disCon);
+    Component c;
 
-    if (connectionControl != null)
-      this.getChildren().remove(connectionControl);
+    c = this.m_cCtrl.remove(disCon);
+    if (c != null)
+      this.remove(c);
     this.onAfterStep();
   }
 
@@ -244,26 +269,25 @@ final class VisualizationControl extends SimControl implements ISimulationListen
   @Override
   public void onAfterStep() {
     int i, maxX, maxY;
-    Node node;
+    Component c;
 
     maxX = 0;
     maxY = 0;
 
     for (i = (this.getComponentCount() - 1); i >= 0; i--) {
-      node = this.getComponent(i);
+      c = this.getComponent(i);
+      if (c instanceof SimCtrlBase)
+        ((SimCtrlBase) c).onAfterStep();
 
-      if (node instanceof SimControl)
-        ((SimControl) node).onAfterStep();
-
-      maxX = Math.max(maxX, ((NodeControl)node).getSimNode().getX() +  (int)((NodeControl)node).getWidth());
-      maxY = Math.max(maxY,  ((NodeControl)node).getSimNode().getY() +  (int)((NodeControl)node).getHeight());
+      maxX = Math.max(maxX, c.getX() + c.getWidth());
+      maxY = Math.max(maxY, c.getY() + c.getHeight());
     }
 
-    this.maxX = Math.max(500, maxX);
-    this.maxY = Math.max(maxY, 500);
+    this.m_maxX = Math.max(500, maxX);
+    this.m_maxY = Math.max(maxY, 500);
 
     super.onAfterStep();
-//    this.repaint();
+    this.repaint();
   }
 
   // /**
@@ -286,31 +310,31 @@ final class VisualizationControl extends SimControl implements ISimulationListen
    *
    * @return a dimension object indicating this component's preferred size
    */
-//  @Override
-//  public Dimension getPreferredSize() {
-//    return new Dimension(this.maxX + 10, this.maxY + 10);
-//  }
-//
-//  /**
-//   * Gets the maximum size of this component.
-//   *
-//   * @return a dimension object indicating this component's maximum size
-//   */
-//  @Override
-//  public Dimension getMaximumSize() {
-//    return new Dimension(Integer.MAX_VALUE, Integer.MIN_VALUE);
-//    // this.getPreferredSize();
-//  }
-//
-//  /**
-//   * Gets the minimum size of this component.
-//   *
-//   * @return a dimension object indicating this component's minimum size
-//   */
-//  @Override
-//  public Dimension getMinimumSize() {
-//    return this.getPreferredSize();
-//  }
+  @Override
+  public Dimension getPreferredSize() {
+    return new Dimension(this.m_maxX + 10, this.m_maxY + 10);
+  }
+
+  /**
+   * Gets the maximum size of this component.
+   *
+   * @return a dimension object indicating this component's maximum size
+   */
+  @Override
+  public Dimension getMaximumSize() {
+    return new Dimension(Integer.MAX_VALUE, Integer.MIN_VALUE);
+    // this.getPreferredSize();
+  }
+
+  /**
+   * Gets the minimum size of this component.
+   *
+   * @return a dimension object indicating this component's minimum size
+   */
+  @Override
+  public Dimension getMinimumSize() {
+    return this.getPreferredSize();
+  }
 
   /**
    * This method is invoked if a string has been written to the log by a
@@ -323,17 +347,6 @@ final class VisualizationControl extends SimControl implements ISimulationListen
    */
   public void onLog(final String logged, final ModelBase source) {
     //
-  }
-
-  private Node getComponent(int index) {
-    ArrayList<SimControl> controls = new ArrayList<>(this.nodeControls.values());
-    controls.addAll(this.connectionControls.values());
-    return controls.get(index);
-  }
-
-  private int getComponentCount() {
-   int count =  this.nodeControls.size() + this.connectionControls.size();
-    return count;
   }
 
 }

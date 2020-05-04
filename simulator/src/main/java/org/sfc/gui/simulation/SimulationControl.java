@@ -28,14 +28,18 @@
 
 package org.sfc.gui.simulation;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Slider;
-import javafx.scene.layout.ColumnConstraints;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JSlider;
+import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import org.sfc.gui.ComponentUtils;
 import org.sfc.gui.SfcComponent;
 import org.sfc.parallel.simulation.SimulationThread;
@@ -54,11 +58,10 @@ public class SimulationControl extends SfcComponent {
   /**
    * The action listener for single steps
    */
-  static final EventHandler SINGLE_STEP = new EventHandler<ActionEvent>() {
-    @Override
-    public void handle(ActionEvent event) {
-      ((SimulationControl) (((Node) (event.getSource())).getParent())).m_thread
-              .step();
+  static final ActionListener SINGLE_STEP = new ActionListener() {
+    public void actionPerformed(final ActionEvent e) {
+      ((SimulationControl) (((Component) (e.getSource())).getParent())).m_thread
+          .step();
     }
   };
 
@@ -70,7 +73,7 @@ public class SimulationControl extends SfcComponent {
   /**
    * the slider
    */
-  private final Slider m_speed;
+  private final JSlider m_speed;
 
   /**
    * Create a new simulation control
@@ -81,16 +84,15 @@ public class SimulationControl extends SfcComponent {
   public SimulationControl(final SimulationThread thread) {
     super();
 
-    Slider sl;
-    Button b;
+    JSlider sl;
+    JButton b;
 
-    this.m_speed = sl = new Slider( 0, 100, 0);
-//    sl.setPaintLabels(false);
-//    sl.setPaintTicks(false);
-//    sl.setPaintTrack(true);
-    sl.valueProperty().addListener(new ChangeListener() {
-      @Override
-      public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+    this.m_speed = sl = new JSlider(SwingConstants.HORIZONTAL, 0, 100, 0);
+    sl.setPaintLabels(false);
+    sl.setPaintTicks(false);
+    sl.setPaintTrack(true);
+    sl.addChangeListener(new ChangeListener() {
+      public void stateChanged(final ChangeEvent e) {
         SimulationControl.this.updateSpeed();
       }
     });
@@ -98,31 +100,31 @@ public class SimulationControl extends SfcComponent {
     this.m_thread = thread;
     this.m_thread.setSpeed(0);
 
-    this.getColumnConstraints().addAll(new ColumnConstraints());
-//    ComponentUtils.putGrid(this, sl, 0, 0, 1, 1, 1, 1,
-//        GridBagConstraints.CENTER, GridBagConstraints.BOTH);
+    this.setLayout(new GridBagLayout());
+    ComponentUtils.putGrid(this, sl, 0, 0, 1, 1, 1, 1,
+        GridBagConstraints.CENTER, GridBagConstraints.BOTH);
 
-    b = new Button("step"); //$NON-NLS-1$
-    b.setOnAction(SINGLE_STEP);
+    b = new JButton("step"); //$NON-NLS-1$
+    b.addActionListener(SINGLE_STEP);
     this.addButton(b);
   }
 
-  /**^
+  /**
    * Add a button to this control
    *
    * @param button
    *          the button to add
    */
-  public void addButton(final Button button) {
-//    ComponentUtils.putGrid(this, button, this.getComponentCount(), 0, 1,
-//        1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+  public void addButton(final JButton button) {
+    ComponentUtils.putGrid(this, button, this.getComponentCount(), 0, 1,
+        1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE);
   }
 
   /**
    * Internally update the speed
    */
   synchronized final void updateSpeed() {
-    this.m_thread.setSpeed((int) this.m_speed.getValue());
+    this.m_thread.setSpeed(this.m_speed.getValue());
   }
 
   /**

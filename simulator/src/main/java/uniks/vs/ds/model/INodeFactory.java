@@ -42,7 +42,7 @@ public interface INodeFactory {
    *          the y-coordinate for the new node
    * @return the new node
    */
-  public abstract SimNode createNode(final double x, final double y);
+  public abstract Node createNode(final int x, final int y);
 
   /**
    * Obtain a human readable description of the node's type name.

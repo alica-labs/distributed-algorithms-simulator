@@ -28,14 +28,17 @@
 
 package org.sfc.gui;
 
-import javafx.geometry.Insets;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.image.ImageView;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.LayoutManager;
+
+import javax.swing.JButton;
 
 import org.sfc.gui.resources.icons.Icons;
 import org.sfc.gui.windows.IWindow;
-
 import org.sfc.utils.ErrorUtils;
 
 /**
@@ -78,12 +81,12 @@ public final class ComponentUtils {
    *         none exists/could be found
    */
   public static final IWindow getWindow(final Object o) {
-    Node c;
+    Component c;
 
     if (o instanceof IWindow)
       return ((IWindow) o);
-    if (o instanceof Node) {
-      for (c = ((Node) o); c != null; c = c.getParent()) {
+    if (o instanceof Component) {
+      for (c = ((Component) o); c != null; c = c.getParent()) {
         if (c instanceof IWindow)
           return ((IWindow) c);
       }
@@ -117,20 +120,20 @@ public final class ComponentUtils {
    * @param insets
    *          The insets to be used.
    */
-  public static final void insetPutGrid(final Node container,
-      final Node component, final int gridX, final int gridY,
+  public static final void insetPutGrid(final Container container,
+      final Component component, final int gridX, final int gridY,
       final int gridWidth, final int gridHeight, final double weightX,
       final double weightY, final int anchor, final int fill,
       final Insets insets) {
-//    LayoutManager l;
-//    l = container.getLayout();
-//    if (l instanceof GridBagLayout) {
-//      ((GridBagLayout) (l)).setConstraints(component,
-//          new GridBagConstraints(gridX, gridY, gridWidth, gridHeight,
-//              weightX, weightY, anchor, fill, insets, DEFAULT_IPAD_X,
-//              DEFAULT_IPAD_Y));
-//    }
-//    container.add(component);
+    LayoutManager l;
+    l = container.getLayout();
+    if (l instanceof GridBagLayout) {
+      ((GridBagLayout) (l)).setConstraints(component,
+          new GridBagConstraints(gridX, gridY, gridWidth, gridHeight,
+              weightX, weightY, anchor, fill, insets, DEFAULT_IPAD_X,
+              DEFAULT_IPAD_Y));
+    }
+    container.add(component);
   }
 
   /**
@@ -157,19 +160,19 @@ public final class ComponentUtils {
    * @param fill
    *          The initial fill value.
    */
-  public static final void putGrid(final Node container,
-      final Node component, final int gridX, final int gridY,
+  public static final void putGrid(final Container container,
+      final Component component, final int gridX, final int gridY,
       final int gridWidth, final int gridHeight, final double weightX,
       final double weightY, final int anchor, final int fill) {
-//    LayoutManager l;
-//    l = container.getLayout();
-//    if (l instanceof GridBagLayout) {
-//      ((GridBagLayout) (l)).setConstraints(component,
-//          new GridBagConstraints(gridX, gridY, gridWidth, gridHeight,
-//              weightX, weightY, anchor, fill, INSETS, DEFAULT_IPAD_X,
-//              DEFAULT_IPAD_Y));
-//    }
-//    container.add(component);
+    LayoutManager l;
+    l = container.getLayout();
+    if (l instanceof GridBagLayout) {
+      ((GridBagLayout) (l)).setConstraints(component,
+          new GridBagConstraints(gridX, gridY, gridWidth, gridHeight,
+              weightX, weightY, anchor, fill, INSETS, DEFAULT_IPAD_X,
+              DEFAULT_IPAD_Y));
+    }
+    container.add(component);
   }
 
   /**
@@ -196,19 +199,19 @@ public final class ComponentUtils {
    * @param fill
    *          The initial fill value.
    */
-  public static final void noInsetsPutGrid(final Node container,
-      final Node component, final int gridX, final int gridY,
+  public static final void noInsetsPutGrid(final Container container,
+      final Component component, final int gridX, final int gridY,
       final int gridWidth, final int gridHeight, final double weightX,
       final double weightY, final int anchor, final int fill) {
-//    LayoutManager l;
-//    l = container.getLayout();
-//    if (l instanceof GridBagLayout) {
-//      ((GridBagLayout) (l)).setConstraints(component,
-//          new GridBagConstraints(gridX, gridY, gridWidth, gridHeight,
-//              weightX, weightY, anchor, fill, NOINSETS, DEFAULT_IPAD_X,
-//              DEFAULT_IPAD_Y));
-//    }
-//    container.add(component);
+    LayoutManager l;
+    l = container.getLayout();
+    if (l instanceof GridBagLayout) {
+      ((GridBagLayout) (l)).setConstraints(component,
+          new GridBagConstraints(gridX, gridY, gridWidth, gridHeight,
+              weightX, weightY, anchor, fill, NOINSETS, DEFAULT_IPAD_X,
+              DEFAULT_IPAD_Y));
+    }
+    container.add(component);
   }
 
   /**
@@ -216,12 +219,12 @@ public final class ComponentUtils {
    * 
    * @return a new ok button.
    */
-  public static final Button createOkButton() {
-    Button button;
+  public static final JButton createOkButton() {
+    JButton jb;
 
-    button = new Button("Ok"); //$NON-NLS-1$
-    button.setGraphic(new ImageView(Icons.OK));
-    return button;
+    jb = new JButton("Ok"); //$NON-NLS-1$
+    jb.setIcon(Icons.OK);
+    return jb;
   }
 
   /**

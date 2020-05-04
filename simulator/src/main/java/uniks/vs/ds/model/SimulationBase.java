@@ -26,7 +26,8 @@
 
 package uniks.vs.ds.model;
 
-import javafx.scene.paint.Color;
+import java.awt.Color;
+
 import uniks.vs.ds.algorithms.ColorUtils;
 
 /**

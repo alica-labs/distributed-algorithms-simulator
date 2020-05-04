@@ -49,7 +49,7 @@ public class DefaultNodeFactory implements INodeFactory {
   /**
    * the constructor
    */
-  private final Constructor<? extends SimNode> m_const;
+  private final Constructor<? extends Node> m_const;
 
   /**
    * Create a new default node factory.
@@ -57,7 +57,7 @@ public class DefaultNodeFactory implements INodeFactory {
    * @param clazz
    *          the class of the new node type
    */
-  public DefaultNodeFactory(final Class<? extends SimNode> clazz) {
+  public DefaultNodeFactory(final Class<? extends Node> clazz) {
     this(clazz.getSimpleName(), clazz);
   }
 
@@ -70,9 +70,9 @@ public class DefaultNodeFactory implements INodeFactory {
    *          the class of the new node type
    */
   public DefaultNodeFactory(final String name,
-      final Class<? extends SimNode> clazz) {
+      final Class<? extends Node> clazz) {
     super();
-    Constructor<? extends SimNode> cc;
+    Constructor<? extends Node> cc;
 
     this.m_name = name;
 
@@ -94,10 +94,10 @@ public class DefaultNodeFactory implements INodeFactory {
    *          the y-coordinate for the new node
    * @return the new node
    */
-  public SimNode createNode(double x, double y) {
+  public Node createNode(final int x, final int y) {
     try {
-      return this.m_const.newInstance(new Object[] { new Integer((int)x),
-          new Integer((int)y) });
+      return this.m_const.newInstance(new Object[] { new Integer(x),
+          new Integer(y) });
     } catch (Throwable t) {
       ErrorUtils.onError(t);
       return null;

@@ -151,8 +151,8 @@ public final class TextUtils {
 
   /**
    * Append the time stored in <code>gc</code> to the given appendable.
-   * The SFC-time absolute format is <code>yyyy-mm-dd-hh:mm:ss</code>,
-   * the relative time format is <code>dd-hh:mm:ss</code>.
+   * The SFC-time absolute format is <code>yyyy-mm-dd-hh:mm:ss_</code>,
+   * the relative time format is <code>dd-hh:mm:ss_</code>.
    * 
    * @param gc
    *          The calendar.

@@ -26,15 +26,13 @@
 
 package uniks.vs.ds.view;
 
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.scene.Node;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.image.ImageView;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javafx.stage.Window;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+
 import org.sfc.gui.resources.icons.Icons;
 
 import uniks.vs.ds.model.INodeFactory;
@@ -46,215 +44,227 @@ import uniks.vs.ds.model.Simulation;
  *
  * @author Thomas Weise
  */
-final class VisualizationControlPopup extends ContextMenu {
+final class VisualizationControlPopup extends JPopupMenu {
+  /**
+   * the serial version uid
+   */
+  private static final long serialVersionUID = 1L;
+
+  /**
+   * the x coordinate
+   */
+  static int s_x;
+
+  /**
+   * the y coordinate
+   */
+  static int s_y;
+
+  /**
+   * The popup menu of visualization controls
+   */
+  VisualizationControlPopup() {
+    super();
+
+    JMenuItem j;
+    INodeFactory[] f;
+    int i;
+
+    f = NodeTypes.getNodeFactories();
+
+    j = new JMenuItem("info"); //$NON-NLS-1$
+    j.addActionListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent ae) {
+        Object o;
+        Component c;
+        Simulation n;
+
+        o = ae.getSource();
+        if (o instanceof Component) {
+          for (c = ((Component) o); c != null; c = c.getParent()) {
+            if (c instanceof JPopupMenu) {
+              c = ((JPopupMenu) c).getInvoker();
+            }
+            if (c instanceof VisualizationControl)
+              break;
+          }
+
+          if (c != null) {
+            n = (((VisualizationControl) c).getSimulation());
+            if (n != null)
+              PropertyWindow.showProperties(n);
+          }
+        }
+
+      }
+    });
+    j.setIcon(Icons.INFO);
+    this.add(j);
+    this.addSeparator();
+
+    for (i = 0; i < f.length; i++) {
+      j = new JMenuItem(f[i].getNodeTypeName());
+      j.setIcon(Icons.ADD);
+      j.addActionListener(new FactoryAL(f[i]));
+      this.add(j);
+    }
+
+    this.addSeparator();
+
+    j = new JMenuItem("trigger all"); //$NON-NLS-1$
+    j.addActionListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent ae) {
+        Object o;
+        Component c;
+
+        o = ae.getSource();
+        if (o instanceof Component) {
+          for (c = ((Component) o); c != null; c = c.getParent()) {
+            if (c instanceof JPopupMenu) {
+              c = ((JPopupMenu) c).getInvoker();
+            }
+            if (c instanceof VisualizationControl)
+              break;
+          }
+
+          if (c != null) {
+            ((VisualizationControl) c).getSimulation().trigger();
+          }
+        }
+
+      }
+    });
+    j.setIcon(Icons.EXECUTE);
+    this.add(j);
+
+    j = new JMenuItem("step all"); //$NON-NLS-1$
+    j.addActionListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent ae) {
+        Object o;
+        Component c;
+
+        o = ae.getSource();
+        if (o instanceof Component) {
+          for (c = ((Component) o); c != null; c = c.getParent()) {
+            if (c instanceof JPopupMenu) {
+              c = ((JPopupMenu) c).getInvoker();
+            }
+            if (c instanceof VisualizationControl)
+              break;
+          }
+
+          if (c != null) {
+            ((VisualizationControl) c).getSimulation().step();
+          }
+        }
+
+      }
+    });
+    j.setIcon(Icons.APPLY);
+    this.add(j);
+
+    j = new JMenuItem("reset all"); //$NON-NLS-1$
+    j.addActionListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent ae) {
+        Object o;
+        Component c;
+
+        o = ae.getSource();
+        if (o instanceof Component) {
+          for (c = ((Component) o); c != null; c = c.getParent()) {
+            if (c instanceof JPopupMenu) {
+              c = ((JPopupMenu) c).getInvoker();
+            }
+            if (c instanceof VisualizationControl)
+              break;
+          }
+
+          if (c != null) {
+            ((VisualizationControl) c).getSimulation().reset();
+          }
+        }
+
+        SpeedDialog.resetAll();
+      }
+    });
+    j.setIcon(Icons.RESET);
+    this.add(j);
+  }
+
+  /**
+   * This internal class embodies a node factory button.
+   *
+   * @author Thomas Weise
+   */
+  private static final class FactoryAL implements ActionListener {
     /**
      * the serial version uid
      */
     private static final long serialVersionUID = 1L;
 
     /**
-     * the x coordinate
+     * the internal node factory
      */
-    static double s_x;
+    private final INodeFactory m_f;
 
     /**
-     * the y coordinate
-     */
-    static double s_y;
-
-    /**
-     * The popup menu of visualization controls
-     */
-    VisualizationControlPopup() {
-        super();
-
-        MenuItem menuItem;
-        INodeFactory[] f;
-        int i;
-
-        f = NodeTypes.getNodeFactories();
-
-        menuItem = new MenuItem("info"); //$NON-NLS-1$
-
-        menuItem.setOnAction(ae -> {
-            MenuItem item = (MenuItem) ae.getSource();
-            ContextMenu parentPopup = item.getParentPopup();
-            Node ownerNode = parentPopup.getOwnerNode();
-
-            if (ownerNode != null) {
-                Simulation n = (((VisualizationControl) ownerNode).getSimulation());
-                if (n != null)
-                    PropertyWindow.showProperties(n);
-            }
-        });
-        menuItem.setGraphic(new ImageView(Icons.INFO));
-        this.getItems().add(menuItem);
-
-        SeparatorMenuItem separator = new SeparatorMenuItem();
-        this.getItems().add(separator);
-
-        for (i = 0; i < f.length; i++) {
-            menuItem = new MenuItem(f[i].getNodeTypeName());
-            menuItem.setGraphic(new ImageView(Icons.ADD));
-            menuItem.setOnAction(new FactoryEventHandler(f[i]));
-            this.getItems().add(menuItem);
-        }
-
-        separator = new SeparatorMenuItem();
-        this.getItems().add(separator);
-
-        menuItem = new MenuItem("trigger all"); //$NON-NLS-1$
-        menuItem.setOnAction(ae -> {
-            Object o;
-            Node c;
-
-            o = ae.getSource();
-            if (o instanceof Window) {
-                for (c = ((Node) o); c != null; c = c.getParent()) {
-//            if (c instanceof ContextMenu) {
-//              c = ((ContextMenu) c).getInvoker();
-//            }
-                    if (c instanceof VisualizationControl)
-                        break;
-                }
-
-                if (c != null) {
-                    ((VisualizationControl) c).getSimulation().trigger();
-                }
-            }
-        });
-        menuItem.setGraphic(new ImageView(Icons.EXECUTE));
-        this.getItems().add(menuItem);
-
-        menuItem = new MenuItem("step all"); //$NON-NLS-1$
-        menuItem.setOnAction(ae -> {
-            Object o;
-            Node c;
-
-            o = ae.getSource();
-            if (o instanceof Node) {
-                for (c = ((Node) o); c != null; c = c.getParent()) {
-//            if (c instanceof ContextMenu) {
-//              c = ((PopupWindow) c).getInvoker();
-//            }
-                    if (c instanceof VisualizationControl)
-                        break;
-                }
-
-                if (c != null) {
-                    ((VisualizationControl) c).getSimulation().step();
-                }
-            }
-        });
-        menuItem.setGraphic(new ImageView(Icons.APPLY));
-        this.getItems().add(menuItem);
-
-        menuItem = new MenuItem("reset all"); //$NON-NLS-1$
-        menuItem.setOnAction(ae -> {
-            Object o;
-            Node c;
-
-            o = ae.getSource();
-            if (o instanceof Node) {
-                for (c = ((Node) o); c != null; c = c.getParent()) {
-//            if (c instanceof ContextMenu) {
-//              c = ((JPopupMenu) c).getInvoker();
-//            }
-                    if (c instanceof VisualizationControl)
-                        break;
-                }
-
-                if (c != null) {
-                    ((VisualizationControl) c).getSimulation().reset();
-                }
-            }
-
-            SpeedDialog.resetAll();
-        });
-        menuItem.setGraphic(new ImageView(Icons.RESET));
-        this.getItems().add(menuItem);
-    }
-
-    /**
-     * This internal class embodies a node factory button.
+     * Create a new node factory menu item.
      *
-     * @author Thomas Weise
+     * @param f
+     *          the node factory
      */
-    private static final class FactoryEventHandler implements EventHandler {
-        /**
-         * the serial version uid
-         */
-        private static final long serialVersionUID = 1L;
-
-        /**
-         * the internal node factory
-         */
-        private final INodeFactory nodeFactory;
-
-        /**
-         * Create a new node factory menu item.
-         *
-         * @param f the node factory
-         */
-        FactoryEventHandler(final INodeFactory f) {
-            super();
-            this.nodeFactory = f;
-        }
-
-        /**
-         * Invoked when an action occurs.
-         *
-         * @param e the event
-         */
-        public void actionPerformed(Event e) {
-
-            Object object = e.getSource();
-
-            if (! (object instanceof MenuItem)) {
-                return;
-            }
-
-            MenuItem menuItem = (MenuItem) object;
-            ContextMenu contextMenu = menuItem.getParentPopup();
-            object = contextMenu.getOwnerNode();
-
-//            for (; ; ) {
-//                if (object == null)
-//                    return;
-//                if (object instanceof MenuItem)
-//                    break;
-//                if (object instanceof Node) {
-//                    object = ((Node) object).getParent();
-//                } else
-//                    return;
-//            }
-//
-//            contextMenu = ((ContextMenu) object);
-//            object = contextMenu.getOwnerWindow();
-//            for (; ; ) {
-//                if (object == null)
-//                    return;
-//                if (object instanceof VisualizationControl)
-//                    break;
-//                if (object instanceof Node) {
-//                    object = ((Node) object).getParent();
-//                } else
-//                    return;
-//            }
-
-            VisualizationControl visualizationControl = ((VisualizationControl) object);
-            Simulation simulation = visualizationControl.getSimulation();
-
-            if (simulation != null) {
-                simulation.addNode(this.nodeFactory.createNode(s_x, s_y));
-            }
-
-        }
-
-        @Override
-        public void handle(Event event) {
-            this.actionPerformed(event);
-        }
+    FactoryAL(final INodeFactory f) {
+      super();
+      this.m_f = f;
     }
+
+    /**
+     * Invoked when an action occurs.
+     *
+     * @param e
+     *          the event
+     */
+    public void actionPerformed(ActionEvent e) {
+      Object o;
+      JPopupMenu j;
+      VisualizationControl c;
+      Simulation n;
+
+      o = e.getSource();
+      for (;;) {
+        if (o == null)
+          return;
+        if (o instanceof JPopupMenu)
+          break;
+        if (o instanceof Component) {
+          o = ((Component) o).getParent();
+        } else
+          return;
+      }
+
+      j = ((JPopupMenu) o);
+
+      o = j.getInvoker();
+
+      for (;;) {
+        if (o == null)
+          return;
+        if (o instanceof VisualizationControl)
+          break;
+        if (o instanceof Component) {
+          o = ((Component) o).getParent();
+        } else
+          return;
+      }
+
+      c = ((VisualizationControl) o);
+
+      n = c.getSimulation();
+      if (n != null) {
+        n.addNode(this.m_f.createNode(s_x, s_y));
+      }
+
+    }
+  }
 
 }

@@ -65,7 +65,7 @@ public class SfcDialog extends JDialog implements ICloseable, IWindow {
     super(owner);
     this.m_closeable = new WindowCloseable(this);
     this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-//    this.addWindowListener(SfcFrame.CLOSER);
+    this.addWindowListener(SfcFrame.CLOSER);
   }
 
   /**
