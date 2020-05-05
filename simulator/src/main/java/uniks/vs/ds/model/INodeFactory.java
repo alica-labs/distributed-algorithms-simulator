@@ -4,7 +4,7 @@
  * E-Mail           : tweise@gmx.de
  * Creation Date    : 2007-03-26
  * Creator          : Thomas Weise
- * Original Filename: uniks.vs.ds.model.INodeFactory.java
+ * Original Filename: uniks.vs.de.uniks.vs.ds.model.INodeFactory.java
  * Last modification: 2009-04-01
  *                by: Thomas Weise
  *

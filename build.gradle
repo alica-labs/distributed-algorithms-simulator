@@ -2,6 +2,7 @@
 
 plugins {
     id 'java'
+    id 'java-library'
     id 'application'
 	id "org.openjfx.javafxplugin" version "0.0.8"
 }
@@ -13,10 +14,10 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.openjfx', name: 'javafx-base', version: '11.0.2'
-    compile group: 'org.openjfx', name: 'javafx-controls', version: '11.0.2'
-    compile group: 'org.openjfx', name: 'javafx-graphics', version: '11.0.2'
-    compile group: 'org.openjfx', name: 'javafx-fxml', version: '11.0.2'
+    compileOnly group: 'org.openjfx', name: 'javafx-base', version: '11.0.2'
+    compileOnly group: 'org.openjfx', name: 'javafx-controls', version: '11.0.2'
+    compileOnly group: 'org.openjfx', name: 'javafx-graphics', version: '11.0.2'
+    compileOnly group: 'org.openjfx', name: 'javafx-fxml', version: '11.0.2'
 	implementation 'com.google.guava:guava:27.0.1-jre'
     testImplementation 'junit:junit:4.12'
 }
@@ -57,8 +58,14 @@ run {
     }
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'uniks.vs.de.uniks.vs.ds.Simulator'
+    }
+}
+
 // Define the main class for the application
-mainClassName = 'uniks.vs.ds.Simulator'
+mainClassName = 'uniks.vs.de.uniks.vs.ds.Simulator'
 
 // Requires Java Version 11
 sourceCompatibility = 11
