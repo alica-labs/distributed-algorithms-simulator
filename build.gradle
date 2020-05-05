@@ -2,6 +2,7 @@
 
 plugins {
     id 'java'
+    id 'java-library'
     id 'application'
 }
 
