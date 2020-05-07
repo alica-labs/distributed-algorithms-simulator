@@ -60,12 +60,12 @@ run {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'uniks.vs.de.uniks.vs.ds.Simulator'
+        attributes 'Main-Class': 'uniks.vs.ds.Simulator'
     }
 }
 
 // Define the main class for the application
-mainClassName = 'uniks.vs.de.uniks.vs.ds.Simulator'
+mainClassName = 'uniks.vs.ds.Simulator'
 
 // Requires Java Version 11
 sourceCompatibility = 11
