@@ -360,6 +360,21 @@ public class Simulation extends ModelBase implements IStepable {
   }
 
   /**
+   * connect all nodes
+   */
+  public synchronized void connectAll() {
+    for (Node node :this.m_nodes) {
+
+      for (Node neighbor : this.m_nodes) {
+
+        if (neighbor != node)
+            this.connectNodes(node,neighbor);
+      }
+    }
+    this.onAfterStep();
+  }
+
+  /**
    * trigger all nodes
    */
   public synchronized void trigger() {

@@ -190,9 +190,10 @@ public class Node extends SimulationBase implements IStepable {
       x.send(m);
       this.m_sent++;
       if (s != null) {
-        synchronized (s) {
+        //TODO: is this a problem ???
+        //synchronized (s) {
           s.m_msgCount++;
-        }
+        //}
       }
     }
 
@@ -382,8 +383,8 @@ public class Node extends SimulationBase implements IStepable {
    * This method can directly be called from somewhere in order to start
    * something. Currently it does nothing, so fill it with life!!!
    */
-  public synchronized void trigger() {
-    this.log("triggered"); //$NON-NLS-1$
+  public void trigger() {
+//    this.log("triggered"); //$NON-NLS-1$
   }
 
   /**
