@@ -26,12 +26,12 @@
 
 package uniks.vs.ds.algorithms;
 
+import java.awt.Color;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Random;
 
-import javafx.scene.paint.Color;
 import org.sfc.collections.CollectionUtils;
 import org.sfc.math.Mathematics;
 import org.sfc.utils.ErrorUtils;
@@ -65,8 +65,8 @@ public final class ColorUtils {
 
 		l = CollectionUtils.createList();
 		s = CollectionUtils.createList();
-//		l.add(Color.WHITE);
-//		s.add("white"); //$NON-NLS-1$
+		l.add(Color.WHITE);
+		s.add("white"); //$NON-NLS-1$
 		l.add(Color.ORANGE);
 		s.add("orange"); //$NON-NLS-1$
 		l.add(Color.RED);
@@ -209,8 +209,7 @@ public final class ColorUtils {
 			if (COLORS[i].equals(c))
 				return NAMES[i];
 		}
-
-		return Integer.toHexString((int)(c.getRed()*255)) + Integer.toHexString((int)(c.getBlue()*255)) + Integer.toHexString((int)(c.getGreen()*255));
+		return Integer.toHexString(c.getRed()) + Integer.toHexString(c.getBlue()) + Integer.toHexString(c.getGreen());
 	}
 
 	/**
@@ -246,7 +245,7 @@ public final class ColorUtils {
 			s = (r + g + b);
 		} while ((s < 280) || (s > 600));
 
-		return new Color(r, g, b,1);
+		return new Color(r, g, b);
 	}
 
 	/**
