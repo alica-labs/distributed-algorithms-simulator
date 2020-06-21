@@ -137,6 +137,32 @@ final class VisualizationControlPopup extends JPopupMenu {
     j.setIcon(Icons.EXECUTE);
     this.add(j);
 
+    j = new JMenuItem("connect as ring"); //$NON-NLS-1$
+    j.addActionListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent ae) {
+        Object o;
+        Component c;
+
+        o = ae.getSource();
+        if (o instanceof Component) {
+          for (c = ((Component) o); c != null; c = c.getParent()) {
+            if (c instanceof JPopupMenu) {
+              c = ((JPopupMenu) c).getInvoker();
+            }
+            if (c instanceof VisualizationControl)
+              break;
+          }
+
+          if (c != null) {
+            ((VisualizationControl) c).getSimulation().connectAsRing();
+          }
+        }
+
+      }
+    });
+    j.setIcon(Icons.EXECUTE);
+    this.add(j);
+
     this.addSeparator();
 
     j = new JMenuItem("trigger all"); //$NON-NLS-1$

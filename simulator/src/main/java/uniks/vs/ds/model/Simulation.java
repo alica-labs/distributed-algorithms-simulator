@@ -373,6 +373,23 @@ public class Simulation extends ModelBase implements IStepable {
     }
     this.onAfterStep();
   }
+  /**
+   * connect all nodes
+   */
+  public synchronized void connectAsRing() {
+    int nodeCount = this.getNodeCount();
+    for(int index = 1; index < nodeCount; index++) {
+        Node node1 = this.m_nodes.get(index-1);
+        Node node2 = this.m_nodes.get(index);
+        this.connectNodes(node1,node2);
+    }
+    Node node1 = this.m_nodes.get(nodeCount-1);
+    Node node2 = this.m_nodes.get(0);
+    this.connectNodes(node1,node2);
+    this.onAfterStep();
+  }
+
+
 
   /**
    * trigger all nodes
