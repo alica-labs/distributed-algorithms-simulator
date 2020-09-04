@@ -26,6 +26,7 @@
 
 package uniks.vs.ds.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.sfc.collections.CollectionUtils;
@@ -442,6 +443,19 @@ public class Node extends SimulationBase implements IStepable {
    */
   public synchronized int getNeighborCount() {
     return this.m_connections.size();
+  }
+
+  public synchronized ArrayList<Integer> getNeighbors() {
+    ArrayList<Integer> ids = new ArrayList<>();
+
+    for (Connection connection: this.m_connections) {
+
+      if (connection.getNode1().getID() != this.getID())
+        ids.add(connection.getNode1().getID());
+      else
+        ids.add(connection.getNode2().getID());
+    }
+    return ids;
   }
 
   /**

@@ -252,6 +252,10 @@ public class Simulation extends ModelBase implements IStepable {
     return this.m_nodes.size();
   }
 
+  public List<Node> getAllNodes() {
+    return this.m_nodes;
+  }
+
   /**
    * Obtain the node at the specified index.
    *
