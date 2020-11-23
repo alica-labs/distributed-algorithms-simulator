@@ -101,7 +101,6 @@ final class VisualizationControlPopup extends JPopupMenu {
     j.setIcon(Icons.INFO);
     this.add(j);
     this.addSeparator();
-
     for (i = 0; i < f.length; i++) {
       j = new JMenuItem(f[i].getNodeTypeName());
       j.setIcon(Icons.ADD);
