@@ -1,39 +1,6 @@
-// User Manual available at https://docs.gradle.org/5.2.1/userguide/tutorial_java_projects.html
-
-plugins {
-    id 'java'
-    id 'java-library'
-    id 'application'
-}
-
-repositories {
-    jcenter()
-    mavenLocal()
-    mavenCentral()
-}
+ext.moduleName = 'de.uniks.vs.simulator'
 
 dependencies {
-    //testImplementation 'junit:junit:4.12'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
+    implementation project(':ui')
+    implementation project(':physics')
 }
-
-sourceSets {
-    main {
-        java.srcDirs = ['simulator/src/main/java']
-        resources.srcDirs = ['simulator/src/main/java']
-    }
-
-    test {
-        java {
-            srcDirs = ['simulator/src/test/java']
-        }
-    }
-}
-
-// Define the main class for the application
-mainClassName = 'uniks.vs.ds.Simulator'
-
-// Requires Java Version 11
-sourceCompatibility = 11
-targetCompatibility = 11
