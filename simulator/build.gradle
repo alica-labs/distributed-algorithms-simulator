@@ -1,0 +1,6 @@
+ext.moduleName = 'de.uniks.vs.simulator'
+
+dependencies {
+    implementation project(':ui')
+    implementation project(':physics')
+}
