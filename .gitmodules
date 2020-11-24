@@ -4,3 +4,6 @@
 [submodule "physics"]
 	path = physics
 	url = git@github.com:ajahl/niu-jfx-physics.git
+[submodule "graphmodel"]
+	path = graphmodel
+	url = git@github.com:ajahl/niu-jfx-graphmodel.git
