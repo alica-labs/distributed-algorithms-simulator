@@ -1,0 +1,6 @@
+[submodule "ui"]
+	path = ui
+	url = git@github.com:ajahl/niu-jfx-ui.git
+[submodule "physics"]
+	path = physics
+	url = git@github.com:ajahl/niu-jfx-physics.git
