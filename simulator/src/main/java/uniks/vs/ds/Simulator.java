@@ -26,6 +26,8 @@
 
 package uniks.vs.ds;
 
+import uniks.vs.ds.algorithms.examples.TestNode;
+import uniks.vs.ds.algorithms.examples.echo.EchoNode;
 import uniks.vs.ds.model.NodeTypes;
 import uniks.vs.ds.view.SimulationWindow;
 
@@ -44,6 +46,8 @@ public class Simulator {
    */
   @SuppressWarnings("unchecked")
   public static void main(String[] args) {
+    NodeTypes.registerNodeType(TestNode.class);
+    NodeTypes.registerNodeType(EchoNode.class);
 
     SimulationWindow w = new SimulationWindow();
 
