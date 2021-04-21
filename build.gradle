@@ -10,7 +10,9 @@ repositories {
     jcenter()
     mavenLocal()
     mavenCentral()
-}
+    google()
+    maven { url 'https://jitpack.io'}
+    }
 
 dependencies {
     //testImplementation 'junit:junit:4.12'
