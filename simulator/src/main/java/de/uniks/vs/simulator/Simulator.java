@@ -1,5 +1,9 @@
 package de.uniks.vs.simulator;
 
+import de.uniks.vs.simulator.algorithms.example.TestNode;
+import de.uniks.vs.simulator.algorithms.example.echo.EchoNode;
+import de.uniks.vs.simulator.algorithms.example.gcd.GCDNode;
+import de.uniks.vs.simulator.model.utils.NodeTypes;
 import javafx.application.Application;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -20,6 +24,9 @@ public class Simulator extends Application {
 
     @Override
     public void start(Stage stage) {
+        NodeTypes.registerNodeType(TestNode.class);
+        NodeTypes.registerNodeType(EchoNode.class);
+        NodeTypes.registerNodeType(GCDNode.class);
         this.startApplication(stage);
     }
 
